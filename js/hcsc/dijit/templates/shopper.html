@@ -1,0 +1,67 @@
+<div>
+	<h3>Applicants</h3>
+	<table border="1">
+		<thead>
+			<tr><th>ID</th><th>Gender</th><th>Birthdate</th><th>Tobacco</th><th>Name</th><th>Height</th><th>Weight</th><th>Review</th></tr>
+		<thead>
+		<tbody>
+			{% for applicant in shopper.applicants %}
+			<tr>
+				<td>{{applicant.id}}</td>
+				<td>{{applicant.gender}}</td>
+				<td>{{applicant.birthdate}}</td>
+				<td>{% if applicant.tobacco %}Y{% else %}N{% endif %}</td>
+				<td>{% if applicant.nickname %}{{applicant.nickname}}{% endif %}</td>
+				<td>{% if applicant.height %}{{applicant.height}}{% endif %}</td>
+				<td>{% if applicant.weight %}{{applicant.weight}}{% endif %}</td>
+				<td>{% if applicant.requiresReview %}YES{% endif %}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	
+	
+	<h3>Buckets</h3>
+	{% for bucket in shopper.buckets %}
+	<div>ID: <span>{{bucket.id}}</span></div>
+	<div>Zip: <span>{{bucket.zip}}</span></div>
+	<div>Start Date: <span>{{bucket.coverageStartDate}}</span></div>
+	<div>Type: <span>{{bucket.type}}</span></div>
+	<table border="1">
+		<thead>
+			<tr><th>Applicant ID</th><th>Type</th><th>Active</th></tr>
+		<thead>
+		<tbody>
+		{% for applicant in bucket.applicants %}
+			<tr>
+				<td>{{applicant.id}}</td>
+				<td>{{applicant.type}}</td>
+				<td>{{applicant.active}}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	{% endfor %}
+	
+	<h3>Saved Quotes</h3>
+	<table border="1">
+		<thead>
+			<tr><th>Plan Name</th><th>Plan Code</th><th>Deductible</th><th>Coinsurance</th><th>Premium</th><th>Bucket ID</th><th>Applicants</th></tr>
+		<thead>
+		<tbody>
+		{% for plan in shopper.plans %}
+			<tr>
+				<td>{{plan.attributes.planName}}</td>
+				<td>{{plan.attributes.planCode}}</td>
+				<td>{{plan.attributes.deductible}}</td>
+				<td>{{plan.attributes.coInsurance}}</td>
+				<td>{{plan.attributes.premium}}</td>
+				<td>{{plan.bucketId}}</td>
+				<td>{% for applicant in plan.applicants %}({{applicant.id}}) {{applicant.type}}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	
+	
+</div>

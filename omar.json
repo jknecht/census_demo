@@ -1,0 +1,194 @@
+{
+	"state":"IL",
+	"account":{
+		"email":"test@slalom.com",
+		"userName":"omar"
+	},
+	"applicants":[
+		{
+			"id":1,
+			"gender":"male",
+			"birthdate":"1980-02-05",
+			"tobacco":false,
+			"nickname":"husband",
+			"weight":180,
+			"height":72
+		},
+		{
+			"id":2,
+			"gender":"female",
+			"birthdate":"1981-03-21",
+			"tobacco":true,
+			"nickname":""
+		},
+		{
+			"id":3,
+			"gender":"male",
+			"birthdate":"2005-03-21",
+			"tobacco":false,
+			"nickname":"kid"
+		},
+		{
+			"id":4,
+			"gender":"male",
+			"birthdate":"1940-03-21",
+			"tobacco":false,
+			"nickname":"grandpa"
+		},
+		{
+			"id":5,
+			"gender":"female",
+			"birthdate":"1943-02-22",
+			"tobacco":true,
+			"nickname":"grandma"
+		},
+		{
+			"id":6,
+			"gender":"female",
+			"birthdate":"2006-04-19",
+			"tobacco":false,
+			"nickname":"kid2"
+		}
+	],
+	"buckets":[
+		{
+			"id":1,
+			"zip":"60611",
+			"coverageStartDate":"2011-05-15",
+			"type":"family",
+			"applicants":[
+				{"id":1,"type":"primary","active":true},
+				{"id":2,"type":"spouse","active":true},
+				{"id":3,"type":"dependent","active":true},
+				{"id":6,"type":"dependent","active":false}
+			]
+		},
+		{
+			"id":2,
+			"zip":"60000",
+			"coverageStartDate":"2011-06-15",
+			"type":"medicare",
+			"applicants":[
+				{"id":4,"type":"primary","active":true}
+			]
+		},
+		{
+			"id":3,
+			"zip":"60000",
+			"coverageStartDate":"2011-07-15",
+			"type":"medicare",
+			"applicants":[
+				{"id":5,"type":"primary","active":true}
+			]
+		}
+	],
+	"plans":[
+		{
+			"uniqueKey":{"planCode":"1ANQ","coInsurance":80,"deductible":5000},
+			"attributes":{
+				"planGroupId":225,
+				"planCode":"1ANQ",
+				"planName":"Blue Choice Value",
+				"premium":88.45,
+				"deductible":5000,
+				"network":"Blue Choice Network",
+				"coInsurance":80,
+				"includesMaternity":false,
+				"includesDental":true,
+				"planFeatures":{
+					"Inpatient Hospital Care":"60% first 14 days 50% thereafter",
+					"Outpatient Emergency Care (Physician and Hospital)":"80% after you pay $75 copayment",
+					"Inpatient Hospital Services Medical/Surgical Services":"80%",
+					"Optional Maternity Coverage":"80%",
+					"Outpatient Hospital/Physician Care":"50%",
+					"Outpatient Physician Medical Services":"80%",
+					"Well-Adult Care":"Not Covered",
+					"Office Visit Copay":"Deductible and Coinsurance",
+					"Individual Out-of-pocket Limit":"$3,000",
+					"Outpatient Hospital Services Diagnostic Testing":"80%",
+					"Outpatient Prescription Drugs":"80% after deductible",
+					"Outpatient Physician Surgical Services":"80%",
+					"Network":"Blue Choice Network",
+					"Inpatient Physician Care":"80%",
+					"Family Out-of-pocket Limit":"$6,000",
+					"Outpatient Hospital Includes Surgery":"80%",
+					"Lifetime Benefit":"$5,000,000",
+					"Well-Child Care":"80%",
+					"Inpatient Physician Medical/Surgical Services":"80%"
+				},
+				"dentalPremium":26.55,
+				"planId":null,
+				"totalPremium":null,
+				"id":"55"
+			},
+			"selectedDental":false,
+			"applicants":[
+				{"id":1,"type":"primary"},
+				{"id":2,"type":"spouse"},
+				{"id":3,"type":"dependent"}
+			],
+			"zip":"60614",
+			"bucketId":"1",
+			"bucketType":"family",
+			"coverageStartDate":"2012-02-23",
+			"dataSourceClassification":"default",
+			"status":"UPDATED",
+			"statusDate":"2012-02-09"
+		},
+		{
+			"uniqueKey":{"planCode":"1AIG","coInsurance":80,"deductible":250},
+			"attributes":{
+				"planGroupId":220,
+				"planCode":"1AIG",
+				"planName":"Select Blue 80% RX",
+				"premium":720.81,
+				"deductible":250,
+				"network":"PPO Network",
+				"coInsurance":80,
+				"includesMaternity":true,
+				"includesDental":true,
+				"planFeatures":{
+					"Inpatient Hospital Care":"60% first 14 days 50% thereafter",
+					"Outpatient Emergency Care (Physician and Hospital)":"100%",
+					"Inpatient Hospital Services Medical/Surgical Services":"100% or 80%",
+					"Optional Maternity Coverage":"100% or 80%",
+					"Outpatient Hospital/Physician Care":"50%",
+					"Outpatient Physician Medical Services":"100% after you pay $20 doctor office visit copay",
+					"Well-Adult Care":"100% after you pay $20 doctor office visit copay",
+					"Office Visit Copay":"$20",
+					"Individual Out-of-pocket Limit":"$1,000",
+					"Outpatient Hospital Services Diagnostic Testing":"100% or 80%",
+					"Outpatient Prescription Drugs":"Drug Card with $10 copay for generics",
+					"Outpatient Physician Surgical Services":"100% or 80%",
+					"Network":"PPO Network",
+					"Inpatient Physician Care":"100% or 80%",
+					"Family Out-of-pocket Limit":"$3,000",
+					"Outpatient Hospital Includes Surgery":"100% or 80%",
+					"Lifetime Benefit":"$5,000,000","Well-Child Care":"100% after you pay $20 doctor office visit copay",
+					"Inpatient Physician Medical/Surgical Services":"100% or 80%"
+				},
+				"dentalPremium":26.55,
+				"planId":null,
+				"totalPremium":null,
+				"id":"26"
+			},
+			"selectedDental":false,
+			"applicants":[
+				{"id":1,"type":"primary"},
+				{"id":2,"type":"spouse"},
+				{"id":3,"type":"dependent"}
+			],
+			"zip":"60614",
+			"bucketId":"1",
+			"bucketType":"family",
+			"coverageStartDate":"2012-02-23",
+			"dataSourceClassification":"default",
+			"agentId":"404",
+			"status":"UPDATED",
+			"statusDate":"2012-02-09"
+		}
+	],
+	"timestamp":"2012-02-09",
+	"savedPlansStale":false,
+	"locked":false
+}

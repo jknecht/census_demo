@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Anonymous shopper</title>
+    <!-- load Dojo -->
+    <script src="js/dojo-release-1.6.1-src/dojo/dojo.js"></script>
+	<script>
+		dojo.registerModulePath("hcsc", "../../hcsc");	
+		dojo.require("hcsc.dijit.ShopperDisplay");
+		
+		dojo.ready(function() {
+			dojo.xhrGet({
+				url:"anon.json",
+				handleAs:"json",
+				load: function(data){
+					new hcsc.dijit.ShopperDisplay({shopper: data}, dojo.byId('current-shopper'));
+				}		
+			});
+		});
+		
+	</script>
+</head>
+<body>
+    <div id="current-shopper"></div>
+</body>
+</html>

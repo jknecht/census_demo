@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Merged Shopper</title>
+    <!-- load Dojo -->
+    <script src="js/dojo-release-1.6.1-src/dojo/dojo.js"></script>
+	<script>
+		dojo.registerModulePath("hcsc", "../../hcsc");	
+		dojo.require("hcsc.dijit.ShopperDisplay");
+		dojo.require("dojo.DeferredList");
+		
+		
+		dojo.ready(function() {
+			
+			dojo.query('#load-anon-link').onclick(function(e) {
+				dojo.stopEvent(e);
+				dojo.xhrGet({
+					url:"anon.json",
+					handleAs:"json",
+					load: function(data){
+						if(dijit.byId('current-shopper')) {
+							dijit.byId('current-shopper').destroy(true);
+						}
+						new hcsc.dijit.ShopperDisplay({shopper: data}, dojo.byId('current-shopper'));
+					}		
+				});
+			});
+			
+			dojo.query('#load-shopper-link').onclick(function(e) {
+				dojo.stopEvent(e);
+				dojo.xhrGet({
+					url:"omar.json",
+					handleAs:"json",
+					load: function(data){
+						if(dijit.byId('current-shopper')) {
+							dijit.byId('current-shopper').destroy(true);
+						}
+						new hcsc.dijit.ShopperDisplay({shopper: data}, dojo.byId('current-shopper'));
+					}		
+				});
+			});
+
+			dojo.query('#load-and-merge-link').onclick(function(e) {
+				dojo.stopEvent(e);
+				
+				var anonDeferred = dojo.xhrGet({
+					url:"anon.json",
+					handleAs:"json",
+				});
+
+				var targetDeferred = dojo.xhrGet({
+					url:"omar.json",
+					handleAs:"json",
+				});
+				
+				var requestList = new dojo.DeferredList([anonDeferred, targetDeferred]);
+				requestList.then(function(res){
+					// "res" is an array of results
+					
+					var anon = res[0][1];		//the second parameter from the first deferred is the anonymous shopper
+					var target = res[1][1];		//the second parameter from the second deferred is the logged-in shopper
+					
+					var unmatchedApplicants = target.applicants
+					for (var i = 0; i < anon.applicants.length; i++) {
+						var candidate = anon.applicants[i];
+						var potentialMatches = dojo.filter(target.applicants, function(potentialMatch) {
+							if (!potentialMatch.matched && potentialMatch.gender == candidate.gender && potentialMatch.birthdate == candidate.birthdate) {
+								//the tobacco question has been answered in both censuses, but the answers are different, treat them as a non-match
+								if (potentialMatch.tobacco !== undefined && candidate.tobacco !== undefined && potentialMatch.tobacco !== candidate.tobacco) {
+									return null;
+								} else {
+									return potentialMatch;
+								}
+							} else {
+								return null;
+							}
+						});
+						
+						// we have no matches, so add the candidate
+						if (potentialMatches.length === 0) {
+							var newApplicant = dojo.clone(candidate);
+							if (target.applicants.length === 0) {
+								newApplicant["id"] = 1;
+							} else {
+								newApplicant["id"] = target.applicants[target.applicants.length - 1]["id"] + 1;
+							}
+							newApplicant["requiresReview"] = true;  //ensure we flag this one for review
+							
+							//push the new applicant into BOTH the target and the list of potential applicants
+							//so we can marry them up in the next step
+							target.applicants.push(newApplicant);
+							potentialMatches.push(newApplicant);
+						}
+						
+						// we have too many matches, so let's whittle it down by nickname
+						if (potentialMatches.length > 1) {
+							var nicknameMatches = dojo.filter(potentialMatches, function(potentialMatch) {
+								if (potentialMatch.nickname !== undefined && potentialMatch.nickname.length > 0 &&
+									candidate.nickname !== undefined && candidate.nickname.length > 0 &&
+									potentialMatch.nickname != candidate.nickname) {
+									return null;
+								} else {
+									return potentialMatch;
+								}
+							});
+							
+							if (nicknameMatches.length > 0) {
+								potentialMatches = nicknameMatches;
+							}
+						}
+
+						// we have too many matches, so let's whittle it down by height
+						if (potentialMatches.length > 1) {
+							var heightMatches = dojo.filter(potentialMatches, function(potentialMatch) {
+								if (potentialMatch.height !== undefined && potentialMatch.height > 0 &&
+									candidate.height !== undefined && candidate.height > 0 &&
+									potentialMatch.height !== candidate.height) {
+									return null;
+								} else {
+									return potentialMatch;
+								}
+							});
+							
+							if (heightMatches.length > 0) {
+								potentialMatches = heightMatches;
+							}
+						}
+
+						// we have too many matches, so let's whittle it down by weight
+						if (potentialMatches.length > 1) {
+							var weightMatches = dojo.filter(potentialMatches, function(potentialMatch) {
+								if (potentialMatch.weight !== undefined && potentialMatch.weight > 0 &&
+									candidate.weight !== undefined && candidate.weight > 0 &&
+									potentialMatch.weight !== candidate.weight) {
+									return null;
+								} else {
+									return potentialMatch;
+								}
+							});
+							
+							if (weightMatches.length > 0) {
+								potentialMatches = weightMatches;
+							}
+						}
+
+						// we still have too many matches, so let's just pick the first one
+						if (potentialMatches.length > 1) {
+							var firstMatches = new Array();
+							firstMatches.push(potentialMatches[0]);
+							potentialMatches = firstMatches;
+						}
+						
+						if (potentialMatches.length === 1) {
+							//update the potential match with data from the candidate
+							var match = potentialMatches[0];
+							match.matched = true;
+							if (candidate.nickname) {
+								match["nickname"] = candidate.nickname;
+							}
+							if (candidate.height) {
+								match["height"] = candidate.height;
+							}
+							if (candidate.weight) {
+								match["weight"] = candidate.weight;
+							}
+							if (candidate.tobacco !== undefined && match.tobacco === undefined) {
+								match["tobacco"] = candidate.tobacco;
+							}
+							
+							//attach the match to the anonymous shopper applicant so we can match things up when we handle the plans/buckets
+							candidate["match"] = match;
+							
+							
+						} else {
+							alert("Somehow we got here... no candidate matches at all, which should never happen!");
+						}
+						
+						
+					}
+
+					//update the buckets to reflect any changes to the family
+					//looking for EXACT matches here, otherwise we just add
+					for (var i = 0; i < anon.buckets.length; i++) {
+						var candidate = dojo.clone(anon.buckets[i]);
+						
+						//update the candidate applicant id's to their matched applicant id's
+						for (var j = 0; j < candidate.applicants.length; j++) {
+							var candidateApplicant = candidate.applicants[j];
+							var matchedApplicant = getMatchedApplicant(anon, candidateApplicant.id);
+							candidateApplicant.id = matchedApplicant.id;
+						}
+						
+						var matchingBuckets = dojo.filter(target.buckets, function(bucket) {
+							if(bucket.zip === candidate.zip &&
+									bucket.coverageStartDate === candidate.coverageStartDate &&
+									bucket.type === candidate.type &&
+									bucket.applicants.length === candidate.applicants.length) {
+							
+								for (var j = 0; j < bucket.applicants.length; j++) {
+									if (candidate.applicants[j].id !== bucket.applicants[j].id) {
+										return null;
+									}
+									if (candidate.applicants[j].type !== bucket.applicants[j].type) {
+										return null;
+									}
+									if (candidate.applicants[j].active !== bucket.applicants[j].active) {
+										return null;
+									}
+									return bucket;
+								}
+							} else {
+								return null;
+							}
+						});
+						
+						if (matchingBuckets.length === 0) {
+							if (target.buckets.length === 0) {
+								candidate["id"] = 1;
+							} else {
+								candidate["id"] = target.buckets[target.buckets.length - 1].id + 1;
+							}
+							target.buckets.push(candidate);
+							anon.buckets[i]["matchId"] = candidate["id"];
+						}
+					}
+					
+					//update the plans to reflect any changes/additions to saved plans
+					//if the plan's unique keys are the same, use the candidate; otherwise just add the ones from the candidate
+					for (var i = 0; i < anon.plans.length; i++) {
+						var candidatePlan = dojo.clone(anon.plans[i]);
+						
+						//update the candidate applicant id's to their matched applicant id's
+						for (var j = 0; j < candidatePlan.applicants.length; j++) {
+							var candidateApplicant = candidatePlan.applicants[j];
+							var matchedApplicant = getMatchedApplicant(anon, candidateApplicant.id);
+							candidateApplicant.id = matchedApplicant.id;
+						}
+						
+						//update the bucket id to the target bucket id
+						var candidateBuckets = dojo.filter(anon.buckets, function(bucket) {
+							if (bucket["id"] == candidatePlan["bucketId"]) {
+								console.log("matched");
+								return bucket;
+							} else {
+								return null;
+							}
+						});
+						candidatePlan["bucketId"] = candidateBuckets[0]["matchId"];
+						
+						//find any plans that already match -- we'll just replace it 
+						var matchingPlans = dojo.filter(target.plans, function(plan) {
+							var candidateKey = candidatePlan.uniqueKey;
+							var targetKey = plan.uniqueKey;
+							if (candidateKey.planCode == targetKey.planCode &&
+								candidateKey.coInsurance == targetKey.coInsurance &&
+								candidateKey.deductible == targetKey.deductible) {
+								return plan;
+							} else {
+								return null;
+							}
+						});
+						
+						if (matchingPlans.length > 0) {
+							//replace the matching plan with the candidate plan
+							dojo.map(target.plans, function(plan, index) {
+								var candidateKey = candidatePlan.uniqueKey;
+								var targetKey = plan.uniqueKey;
+								if (candidateKey.planCode == targetKey.planCode &&
+									candidateKey.coInsurance == targetKey.coInsurance &&
+									candidateKey.deductible == targetKey.deductible) {
+										target.plans[index] = candidatePlan;
+										return candidatePlan;
+									} else {
+										return plan;
+									}
+							});
+						} else {
+							//add the candidate plan to the current shopper state
+							target.plans.push(candidatePlan);
+						}
+					}
+
+					
+					//render the shopper
+					if(dijit.byId('current-shopper')) {
+						dijit.byId('current-shopper').destroy(true);
+					}
+					new hcsc.dijit.ShopperDisplay({shopper: target}, dojo.byId('current-shopper'));
+				});
+				
+
+			});
+			
+		});
+		
+		function getMatchedApplicant(shopper, originalApplicantId) {
+			for (var i = 0; i < shopper.applicants.length; i++) {
+				if (shopper.applicants[i].id === originalApplicantId) {
+				console.log("found");
+					return shopper.applicants[i]["match"];
+				}
+			}
+		}
+	</script>
+</head>
+<body>
+	<div id="menu"><a href="#" id="load-anon-link">Load Anonymous</a> | <a href="#" id="load-shopper-link">Load Logged-in</a> | <a href="#" id="load-and-merge-link">Merge</a></div>
+    <div id="current-shopper"></div>
+</body>
+</html>
