@@ -30,7 +30,7 @@
 			"gender":"female",
 			"birthdate":"2009-04-19",
 			"tobacco":false,
-			"nickname":"kid2"
+			"nickname":"Jenny"
 		}
 	],
 	"buckets":[
@@ -43,6 +43,17 @@
 				{"id":1,"type":"primary","active":true},
 				{"id":3,"type":"dependent","active":true},
 				{"id":4,"type":"dependent","active":true}
+			]
+		},
+		{
+			"id":2,
+			"zip":"60611",
+			"coverageStartDate":"2011-05-15",
+			"type":"family",
+			"applicants":[
+				{"id":2,"type":"primary","active":true},
+				{"id":1,"type":"spouse","active":true},
+				{"id":3,"type":"dependent","active":true}
 			]
 		}
 	],
@@ -93,6 +104,58 @@
 			],
 			"zip":"60614",
 			"bucketId":"1",
+			"bucketType":"family",
+			"coverageStartDate":"2012-02-23",
+			"dataSourceClassification":"default",
+			"status":"UPDATED",
+			"statusDate":"2012-02-09"
+		},
+		{
+			"uniqueKey":{"planCode":"1ANQ","coInsurance":80,"deductible":5000},
+			"attributes":{
+				"planGroupId":225,
+				"planCode":"1ANQ",
+				"planName":"Blue Choice Value",
+				"premium":88.45,
+				"deductible":5000,
+				"network":"Blue Choice Network",
+				"coInsurance":80,
+				"includesMaternity":false,
+				"includesDental":true,
+				"planFeatures":{
+					"Inpatient Hospital Care":"60% first 14 days 50% thereafter",
+					"Outpatient Emergency Care (Physician and Hospital)":"80% after you pay $75 copayment",
+					"Inpatient Hospital Services Medical/Surgical Services":"80%",
+					"Optional Maternity Coverage":"80%",
+					"Outpatient Hospital/Physician Care":"50%",
+					"Outpatient Physician Medical Services":"80%",
+					"Well-Adult Care":"Not Covered",
+					"Office Visit Copay":"Deductible and Coinsurance",
+					"Individual Out-of-pocket Limit":"$3,000",
+					"Outpatient Hospital Services Diagnostic Testing":"80%",
+					"Outpatient Prescription Drugs":"80% after deductible",
+					"Outpatient Physician Surgical Services":"80%",
+					"Network":"Blue Choice Network",
+					"Inpatient Physician Care":"80%",
+					"Family Out-of-pocket Limit":"$6,000",
+					"Outpatient Hospital Includes Surgery":"80%",
+					"Lifetime Benefit":"$5,000,000",
+					"Well-Child Care":"80%",
+					"Inpatient Physician Medical/Surgical Services":"80%"
+				},
+				"dentalPremium":26.55,
+				"planId":null,
+				"totalPremium":null,
+				"id":"55"
+			},
+			"selectedDental":false,
+			"applicants":[
+				{"id":2,"type":"primary"},
+				{"id":1,"type":"spouse"},
+				{"id":3,"type":"dependent"}
+			],
+			"zip":"60614",
+			"bucketId":"2",
 			"bucketType":"family",
 			"coverageStartDate":"2012-02-23",
 			"dataSourceClassification":"default",

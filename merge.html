@@ -255,6 +255,34 @@
 							if (candidateKey.planCode == targetKey.planCode &&
 								candidateKey.coInsurance == targetKey.coInsurance &&
 								candidateKey.deductible == targetKey.deductible) {
+								//the plan identifier is the same, now let's ensure that the maternity and dental flags are the same
+								if (candidate.includesMaternity !== plan.includesMaternity ||
+										candidate.includesDental !== plan.includesDental) {
+									return null;
+								}
+								
+								//getting closer... last thing we need to check is the list of applicants.
+								if (candidate.applicants.length !== plan.applicants.length) {
+									return null;
+								}
+								
+								//add all the candidate applicants to a hash
+								var applicantHash = {};
+								for (var j = 0; j < candidate.applicants.length; j++) {
+									applicantHash[candidate.applicants[j]["type"] + "/" + candidate.applicants[j]["id"]] = candidate.applicants[j];
+								}
+								//delete all the applicants that are in the target plan
+								for (var j = 0; j < plan.applicants.length; j++) {
+									delete applicantHash[plan.applicants[j]["type"] + "/" + plan.applicants[j]["id"]];
+								}
+								//if anybody from the candidate list is still there, it is not a match
+								for (var j = 0; j < candidate.applicants.length; j++) {
+									if (applicantHash[candidate.applicants[j]["type"] + "/" + candidate.applicants[j]["id"]] !== undefined) {
+										return null;
+									}
+								}
+								
+								//if we got here, it must be a match
 								return plan;
 							} else {
 								return null;
